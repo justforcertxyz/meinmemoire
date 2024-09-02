@@ -124,3 +124,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Memoire Config
+BASE_MAX_ANSWER_LENGTH = 2000
+PREMIUM_MAX_ANSWER_LENGTH = 4000
+
+BASE_SUBSCRIPTION_PRICE = 20
+PREMIUM_SUBSCRIPTION_PRICE = 30
