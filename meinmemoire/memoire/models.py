@@ -25,3 +25,62 @@ class BasePlanMemoire(Memoire):
 
 class PremiumPlanMemoire(Memoire):
     pass
+
+
+# TODO: Group or tag ceratain question to suggest them as alternatives
+class Question(models.Model):
+    creation_date = models.DateTimeField(
+        "Creation Date", default=timezone.now)
+    text = models.CharField("Question Text", max_length=250, unique=True)
+
+    @classmethod
+    def create(cls, text):
+        return cls.objects.create(text=text)
+
+
+class Answer(models.Model):
+    creation_date = models.DateTimeField(
+        "Creation Date", default=timezone.now)
+
+    @classmethod
+    def create(cls, question, text=None):
+        if cls == BasePlanAnswer or cls == PremiumPlanAnswer:
+            return cls.objects.create(text=text, question=question)
+        return cls.objects.create()
+
+
+class BasePlanAnswer(Answer):
+    text = models.TextField(
+        "Answer Text", max_length=settings.BASE_MAX_ANSWER_LENGTH)
+    question = models.ForeignKey(
+        Question, verbose_name="Question Answered", on_delete=models.CASCADE)
+
+
+class PremiumPlanAnswer(Answer):
+    text = models.TextField(
+        "Answer Text", max_length=settings.PREMIUM_MAX_ANSWER_LENGTH)
+    question = models.ForeignKey(
+        Question, verbose_name="Question Answered", on_delete=models.CASCADE)
+
+
+# class BasePlanQuestionAnswerSet(models.Model):
+#     creation_date = models.DateTimeField(
+#         "Creation Date", default=timezone.now)
+#     order = models.PositiveSmallIntegerField("Question Order")
+#     question_chosen = models.ForeignKey(
+#         Question, verbose_name="Question Chosen", on_delete=models.CASCADE)
+#     answer = models.ForeignKey(
+#         BasePlanAnswer, verbose_name="Answer to Question", on_delete=models.CASCADE)
+#     memoire = models.ForeignKey(
+#         BasePlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
+#
+#
+# class PremiumPlanQuestionAnswerSet(models.Model):
+#     creation_date = models.DateTimeField(
+#         "Creation Date", default=timezone.now)
+#     order = models.PositiveSmallIntegerField("Question Order")
+#     question_chosen = models.ForeignKey(
+#         Question, verbose_name="Question Chosen", on_delete=models.CASCADE)
+#     memoire = models.ForeignKey(
+#         PremiumPlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
+#
