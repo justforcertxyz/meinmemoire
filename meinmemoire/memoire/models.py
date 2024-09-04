@@ -41,12 +41,14 @@ class Question(models.Model):
 class Answer(models.Model):
     creation_date = models.DateTimeField(
         "Creation Date", default=timezone.now)
+    user = models.ForeignKey(User, verbose_name="User",
+                             on_delete=models.CASCADE)
 
     @classmethod
-    def create(cls, question, text=None):
+    def create(cls, question, user, text=None):
         if cls == BasePlanAnswer or cls == PremiumPlanAnswer:
-            return cls.objects.create(text=text, question=question)
-        return cls.objects.create()
+            return cls.objects.create(text=text, user=user, question=question)
+        return cls.objects.create(user=user)
 
 
 class BasePlanAnswer(Answer):

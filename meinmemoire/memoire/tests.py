@@ -95,6 +95,7 @@ class AnswerModelTest(TestCase):
         self.question = Question.create(text="Some very interesting question?")
         self.text = None
         self.answer_type = Answer
+        self.user = User.objects.create_user(username="Foo", password="bar")
 
     def test_model_exists(self):
         self.assertTrue(issubclass(self.answer_type, Answer))
@@ -104,11 +105,13 @@ class AnswerModelTest(TestCase):
 
     def test_create(self):
         answer = self.answer_type.create(
-            question=self.question, text=self.text)
+            question=self.question, text=self.text, user=self.user)
         self.assertTrue(isinstance(answer, Answer))
 
         count = self.answer_type.objects.count()
         self.assertEqual(count, 1)
+
+        self.assertEqual(answer.user, self.user)
 
 
 class BasePlanAnswerModelTest(TestCase):
@@ -116,6 +119,7 @@ class BasePlanAnswerModelTest(TestCase):
         self.question = Question.create(text="Some very interesting question?")
         self.text = "Some very interesting answer!"
         self.answer_type = BasePlanAnswer
+        self.user = User.objects.create_user(username="Foo", password="bar")
 
     def test_model_exists(self):
         self.assertTrue(issubclass(self.answer_type, Answer))
@@ -125,7 +129,7 @@ class BasePlanAnswerModelTest(TestCase):
 
     def test_create(self):
         answer = self.answer_type.create(
-            question=self.question, text=self.text)
+            question=self.question, text=self.text, user=self.user)
         self.assertTrue(isinstance(answer, BasePlanAnswer))
 
         count = self.answer_type.objects.count()
@@ -135,6 +139,7 @@ class BasePlanAnswerModelTest(TestCase):
         self.assertEqual(answer.text, self.text)
         self.assertEqual(
             self.question.baseplananswer_set.first(), answer)
+        self.assertEqual(answer.user, self.user)
 
 
 class PremiumPlanAnswerModelTest(TestCase):
@@ -142,6 +147,7 @@ class PremiumPlanAnswerModelTest(TestCase):
         self.question = Question.create(text="Some very interesting question?")
         self.text = "Some very interesting answer!"
         self.answer_type = PremiumPlanAnswer
+        self.user = User.objects.create_user(username="Foo", password="bar")
 
     def test_model_exists(self):
         self.assertTrue(issubclass(self.answer_type, Answer))
@@ -151,7 +157,7 @@ class PremiumPlanAnswerModelTest(TestCase):
 
     def test_create(self):
         answer = self.answer_type.create(
-            question=self.question, text=self.text)
+            question=self.question, text=self.text, user=self.user)
         self.assertTrue(isinstance(answer, PremiumPlanAnswer))
 
         count = self.answer_type.objects.count()
@@ -161,3 +167,4 @@ class PremiumPlanAnswerModelTest(TestCase):
         self.assertEqual(answer.text, self.text)
         self.assertEqual(
             self.question.premiumplananswer_set.first(), answer)
+        self.assertEqual(answer.user, self.user)
