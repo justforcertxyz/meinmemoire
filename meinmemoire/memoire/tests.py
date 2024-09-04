@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Memoire, BasePlanMemoire, PremiumPlanMemoire, Question, Answer, BasePlanAnswer, PremiumPlanAnswer, QuestionAnswerSet
+from .models import Memoire, BasePlanMemoire, PremiumPlanMemoire, Question, Answer, BasePlanAnswer, PremiumPlanAnswer, QuestionAnswerSet, BasePlanQuestionAnswerSet, PremiumPlanQuestionAnswerSet
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from unittest import skip
@@ -205,3 +205,73 @@ class QuestionAnswerSetModelTest(TestCase):
 
         self.assertEqual(qas.order, self.order)
         self.assertEqual(qas.question_chosen, self.question)
+
+
+class BasePlanQuestionAnswerSetModelTest(TestCase):
+    def setUp(self):
+        self.qas_type = BasePlanQuestionAnswerSet
+        self.question = Question.create(text="Some very interesting question?")
+
+        self.user = User.objects.create_user(username="Foo", password="bar")
+        answer_type = BasePlanAnswer
+        self.answer = answer_type.create(
+            question=self.question, text="Answer.", user=self.user)
+
+        self.order = 1
+
+        memoire_type = BasePlanMemoire
+        self.memoire = memoire_type.create(user=self.user)
+
+    def test_model_exists(self):
+        self.assertTrue(issubclass(self.qas_type, QuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 0)
+
+    def test_create(self):
+        qas = self.qas_type.create(
+            order=self.order, question_chosen=self.question, answer=self.answer, memoire=self.memoire)
+        self.assertTrue(isinstance(qas, BasePlanQuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 1)
+
+        self.assertEqual(qas.order, self.order)
+        self.assertEqual(qas.question_chosen, self.question)
+        self.assertEqual(qas.answer, self.answer)
+        self.assertEqual(qas.memoire, self.memoire)
+
+
+class PremiumPlanQuestionAnswerSetModelTest(TestCase):
+    def setUp(self):
+        self.qas_type = PremiumPlanQuestionAnswerSet
+        self.question = Question.create(text="Some very interesting question?")
+
+        self.user = User.objects.create_user(username="Foo", password="bar")
+        answer_type = PremiumPlanAnswer
+        self.answer = answer_type.create(
+            question=self.question, text="Answer.", user=self.user)
+
+        self.order = 1
+
+        memoire_type = PremiumPlanMemoire
+        self.memoire = memoire_type.create(user=self.user)
+
+    def test_model_exists(self):
+        self.assertTrue(issubclass(self.qas_type, QuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 0)
+
+    def test_create(self):
+        qas = self.qas_type.create(
+            order=self.order, question_chosen=self.question, answer=self.answer, memoire=self.memoire)
+        self.assertTrue(isinstance(qas, PremiumPlanQuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 1)
+
+        self.assertEqual(qas.order, self.order)
+        self.assertEqual(qas.question_chosen, self.question)
+        self.assertEqual(qas.answer, self.answer)
+        self.assertEqual(qas.memoire, self.memoire)

@@ -83,19 +83,19 @@ class QuestionAnswerSet(models.Model):
     @classmethod
     def create(cls, order, question_chosen, answer=None, memoire=None):
         if cls == BasePlanQuestionAnswerSet or cls == PremiumPlanQuestionAnswerSet:
-            return None
+            return cls.objects.create(order=order, question_chosen=question_chosen, answer=answer, memoire=memoire)
         return cls.objects.create(order=order, question_chosen=question_chosen)
 
 
-# class BasePlanQuestionAnswerSet(QuestionAnswerSet):
-#     answer = models.ForeignKey(
-#         BasePlanAnswer, verbose_name="Answer to Question", on_delete=models.CASCADE)
-#     memoire = models.ForeignKey(
-#         BasePlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
-#
-#
-# class PremiumPlanQuestionAnswerSet(QuestionAnswerSet):
-#     answer = models.ForeignKey(
-#         PremiumPlanAnswer, verbose_name="Answer to Question", on_delete=models.CASCADE)
-#     memoire = models.ForeignKey(
-#         PremiumPlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
+class BasePlanQuestionAnswerSet(QuestionAnswerSet):
+    answer = models.ForeignKey(
+        BasePlanAnswer, verbose_name="Answer to Question", on_delete=models.CASCADE)
+    memoire = models.ForeignKey(
+        BasePlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
+
+
+class PremiumPlanQuestionAnswerSet(QuestionAnswerSet):
+    answer = models.ForeignKey(
+        PremiumPlanAnswer, verbose_name="Answer to Question", on_delete=models.CASCADE)
+    memoire = models.ForeignKey(
+        PremiumPlanMemoire, verbose_name="Memoire Belonging to", on_delete=models.CASCADE)
