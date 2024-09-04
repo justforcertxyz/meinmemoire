@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Memoire, BasePlanMemoire, PremiumPlanMemoire, Question, Answer, BasePlanAnswer, PremiumPlanAnswer
+from .models import Memoire, BasePlanMemoire, PremiumPlanMemoire, Question, Answer, BasePlanAnswer, PremiumPlanAnswer, QuestionAnswerSet
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from unittest import skip
@@ -181,3 +181,27 @@ class PremiumPlanAnswerModelTest(TestCase):
         self.assertEqual(
             self.question.premiumplananswer_set.first(), answer)
         self.assertEqual(answer.user, self.user)
+
+
+class QuestionAnswerSetModelTest(TestCase):
+    def setUp(self):
+        self.qas_type = QuestionAnswerSet
+        self.question = Question.create(text="Some very interesting question?")
+        self.order = 1
+
+    def test_model_exists(self):
+        self.assertTrue(issubclass(self.qas_type, QuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 0)
+
+    def test_create(self):
+        qas = self.qas_type.create(
+            order=self.order, question_chosen=self.question)
+        self.assertTrue(isinstance(qas, QuestionAnswerSet))
+
+        count = self.qas_type.objects.count()
+        self.assertEqual(count, 1)
+
+        self.assertEqual(qas.order, self.order)
+        self.assertEqual(qas.question_chosen, self.question)
