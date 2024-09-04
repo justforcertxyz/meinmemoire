@@ -89,6 +89,19 @@ class QuestionModelTest(TestCase):
 
         self.assertEqual(question.text, self.text)
 
+    def test_answer_set(self):
+        question = Question.create(text=self.text)
+        user = User.objects.create_user(username="Foo", password="bar")
+
+        base_answer = BasePlanAnswer.create(
+            text="Some answer", user=user, question=question)
+        self.assertEqual(question.answer_set(), [base_answer])
+
+        premium_answer = PremiumPlanAnswer.create(
+            text="Some premium answer", user=user, question=question)
+        self.assertTrue(premium_answer in question.answer_set())
+        self.assertTrue(base_answer in question.answer_set())
+
 
 class AnswerModelTest(TestCase):
     def setUp(self):

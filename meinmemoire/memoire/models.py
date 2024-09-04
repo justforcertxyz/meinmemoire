@@ -37,6 +37,15 @@ class Question(models.Model):
     def create(cls, text):
         return cls.objects.create(text=text)
 
+    def answer_set(self) -> list:
+        a_set = []
+        print(f"{self.baseplananswer_set.all()=}")
+        for a in self.baseplananswer_set.all():
+            a_set.append(a)
+        for a in self.premiumplananswer_set.all():
+            a_set.append(a)
+        return a_set
+
 
 class Answer(models.Model):
     creation_date = models.DateTimeField(
